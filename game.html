@@ -1,0 +1,233 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Krypt0Hunter Hacking Game">
+    <title>Krypt0Hunter | Hacking Game</title>
+    <style>
+        body {
+            font-family: 'Courier New', Courier, monospace;
+            background-color: #000;
+            color: #00ff00;
+            text-align: center;
+            padding: 20px;
+            height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            flex-direction: column;
+            margin: 0;
+            overflow: hidden;
+        }
+
+        h1 {
+            font-size: 2rem;
+            text-shadow: 0 0 10px #00ff00;
+            margin-bottom: 20px;
+        }
+
+        #gameContainer {
+            background: rgba(0, 0, 0, 0.8);
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 0 15px #00ff00;
+            width: 80%;
+            max-width: 500px;
+            margin: 20px 0;
+        }
+
+        .password {
+            font-size: 2rem;
+            letter-spacing: 2px;
+            color: #00ff00;
+            text-shadow: 0 0 10px #00ff00;
+            margin-bottom: 20px;
+        }
+
+        .input-container {
+            margin-bottom: 20px;
+        }
+
+        input {
+            padding: 10px;
+            font-size: 1rem;
+            color: #00ff00;
+            background: black;
+            border: 2px solid #00ff00;
+            border-radius: 5px;
+            width: 200px;
+            letter-spacing: 2px;
+        }
+
+        .feedback {
+            font-size: 1.2rem;
+            color: #ff0000;
+            margin-top: 10px;
+        }
+
+        .success {
+            color: #00ff00;
+        }
+
+        #submitButton, #refreshButton {
+            background-color: #00ff00;
+            color: #000;
+            padding: 10px 20px;
+            font-size: 1rem;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            margin: 10px 0;
+            transition: background-color 0.3s ease;
+        }
+
+        #submitButton:hover, #refreshButton:hover {
+            background-color: #009900;
+        }
+
+        #submitButton:disabled, #refreshButton:disabled {
+            background-color: #333;
+            cursor: not-allowed;
+        }
+
+        .matrix-explosion {
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            z-index: 100;
+            pointer-events: none;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .matrix-effect {
+            color: #00ff00;
+            font-size: 30px;
+            animation: matrixEffect 0.5s infinite;
+        }
+
+        @keyframes matrixEffect {
+            0% {
+                opacity: 0.1;
+                transform: scale(0.5);
+            }
+            100% {
+                opacity: 1;
+                transform: scale(1.5);
+            }
+        }
+    </style>
+</head>
+<body>
+    <h1>Welcome to Krypt0Hunter's Hacking Game</h1>
+    <div id="gameContainer">
+        <div class="password" id="passwordDisplay">**********</div>
+        <div class="input-container">
+            <input type="text" id="passwordInput" placeholder="Enter Password">
+        </div>
+        <button id="submitButton">Submit</button>
+        <button id="refreshButton">Refresh Question</button>
+        <div class="feedback" id="feedbackMessage"></div>
+    </div>
+
+    <div id="matrixExplosion" class="matrix-explosion"></div>
+
+    <script>
+        const passwords = [
+            'Krypt0Hunter',
+            'matrixhack',
+            'security123',
+            'penetration',
+            'h4ck3rP@ssw0rd',
+        ];
+
+        let currentPassword = passwords[Math.floor(Math.random() * passwords.length)];
+
+        // Function to display the current password with some letters hidden
+        function displayPassword() {
+            const passwordDisplay = document.getElementById('passwordDisplay');
+            let displayText = '';
+
+            // Loop through each character and hide some
+            for (let i = 0; i < currentPassword.length; i++) {
+                if (Math.random() < 0.4) {
+                    displayText += '*'; // Hide this character
+                } else {
+                    displayText += currentPassword[i]; // Show this character
+                }
+            }
+
+            passwordDisplay.textContent = displayText;
+        }
+
+        // Function to create matrix explosion effect
+        function matrixExplosion() {
+            const explosionElement = document.getElementById('matrixExplosion');
+            const numEffects = 100;
+            explosionElement.innerHTML = '';
+
+            for (let i = 0; i < numEffects; i++) {
+                const matrixEffectElement = document.createElement('div');
+                matrixEffectElement.classList.add('matrix-effect');
+                matrixEffectElement.style.position = 'absolute';
+                matrixEffectElement.style.left = Math.random() * 100 + '%';
+                matrixEffectElement.style.top = Math.random() * 100 + '%';
+                matrixEffectElement.style.animationDuration = Math.random() * 2 + 's';
+                matrixEffectElement.style.animationDelay = Math.random() * 2 + 's';
+                explosionElement.appendChild(matrixEffectElement);
+            }
+
+            setTimeout(() => {
+                explosionElement.innerHTML = '';
+            }, 3000); // Clear the explosion after 3 seconds
+        }
+
+        // Handle game submission
+        function handleSubmit() {
+            const input = document.getElementById('passwordInput').value;
+            const feedbackMessage = document.getElementById('feedbackMessage');
+            const submitButton = document.getElementById('submitButton');
+
+            if (input === currentPassword) {
+                feedbackMessage.textContent = 'Success! You have hacked the system!';
+                feedbackMessage.className = 'feedback success';
+                matrixExplosion();
+                submitButton.disabled = true;
+            } else {
+                feedbackMessage.textContent = 'Incorrect password. Try again!';
+                feedbackMessage.className = 'feedback';
+            }
+        }
+
+        // Handle refreshing the game
+        function handleRefresh() {
+            // Reset the game
+            currentPassword = passwords[Math.floor(Math.random() * passwords.length)];
+            displayPassword();
+            document.getElementById('passwordInput').value = '';
+            document.getElementById('feedbackMessage').textContent = '';
+            document.getElementById('submitButton').disabled = false;
+        }
+
+        // Display the password when the page loads
+        displayPassword();
+
+        // Add event listener to the submit button
+        document.getElementById('submitButton').addEventListener('click', handleSubmit);
+
+        // Allow pressing Enter to submit the password
+        document.getElementById('passwordInput').addEventListener('keypress', function(event) {
+            if (event.key === 'Enter') {
+                handleSubmit();
+            }
+        });
+
+        // Add event listener to the refresh button
+        document.getElementById('refreshButton').addEventListener('click', handleRefresh);
+    </script>
+</body>
+</html>
